@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const formController = require('../controller/formController');
-const upload = require('../middlewares/upload');
+const upload = require('../middleware/upload');
 
 router.get('/', formController.getAllForms);
 
