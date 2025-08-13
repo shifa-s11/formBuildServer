@@ -4,12 +4,14 @@ require('dotenv').config();
 const connectDB = require('./config/db');
 const PORT = process.env.PORT || 4000;
 const formRoutes = require('./routes/formRoutes');
+const questionRoutes = require('./routes/questionRoutes');
 const app = express();
 
 
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json());
 app.use('/api/forms', formRoutes);
+app.use('/api/questions', questionRoutes);
 
 connectDB().then(()=>{
     console.log('Database connected successfully')
