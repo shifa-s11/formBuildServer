@@ -1,5 +1,5 @@
 const Form = require('../models/formSchema');
-const Question = require('../models/Question');
+const Question = require('../models/questionSchema');
 const mongoose = require('mongoose');
 
 // ✅ Get all forms
