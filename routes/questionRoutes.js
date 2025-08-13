@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const questionController = require('../controllers/questionController');
-
+const upload = require('../middlewares/upload');
 
 
 router.get('/', questionController.getAllQuestions);
