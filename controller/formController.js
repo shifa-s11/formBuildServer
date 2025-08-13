@@ -1,4 +1,4 @@
-const Form = require('../models/Form');
+const Form = require('../models/formSchema');
 const Question = require('../models/Question');
 const mongoose = require('mongoose');
 

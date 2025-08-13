@@ -1,4 +1,4 @@
-const Question = require('../models/Question');
+const Question = require('../models/questionSchema');
 const mongoose = require('mongoose');
 
 exports.getAllQuestions = async (req, res) => {
