@@ -1,7 +1,7 @@
 const Form = require('../models/formSchema');
 const Question = require('../models/questionSchema');
 const mongoose = require('mongoose');
-const cloudinary = require('../utils/cloudinary');
+const cloudinary = require('../config/cloudinary');
 
 // ✅ Get all forms
 exports.getAllForms = async (req, res) => {
