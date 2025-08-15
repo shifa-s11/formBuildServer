@@ -28,7 +28,7 @@ exports.getFormById = async (req, res) => {
 exports.createForm = async (req, res) => {
   try {
     const { title, description, questions } = req.body;
-
+console.log(req.body,"before")
     let headerImage = null;
   try {
   if (typeof questions === "string") {
@@ -38,6 +38,7 @@ exports.createForm = async (req, res) => {
   return res.status(400).json({ message: "Invalid questions format" });
 }
 
+console.log(req.body,"after")
     if (req.file) {
       const result = await cloudinary.uploader.upload_stream(
         { folder: 'forms' },
