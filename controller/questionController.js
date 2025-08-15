@@ -52,7 +52,10 @@ let { passage, subQuestions } = req.body;
         const stream = cloudinary.uploader.upload_stream(
           { folder: 'questions' },
           (error, uploadResult) => {
-            if (error) reject(error);
+            if (error){
+               console.error("❌ Cloudinary upload error:", error);
+                reject(error);
+            }
             else resolve(uploadResult.secure_url);
           }
         );
@@ -63,7 +66,7 @@ let { passage, subQuestions } = req.body;
 
     const newQuestion = new Question({
       type,
-      imageUrl: req.file ? req.file.path : imageUrl || null, 
+      imageUrl:imageUrl||null ,
       categorize,
       clozeText,
       options,
@@ -72,7 +75,7 @@ let { passage, subQuestions } = req.body;
       subQuestions,
       description
     });
-
+    console.log("📝 New Question Data:", newQuestion);
     const savedQuestion = await newQuestion.save();
     res.status(201).json(savedQuestion);
   } catch (error) {
