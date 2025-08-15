@@ -30,6 +30,13 @@ exports.createForm = async (req, res) => {
     const { title, description, questions } = req.body;
 
     let headerImage = null;
+  try {
+  if (typeof questions === "string") {
+    questions = JSON.parse(questions);
+  }
+} catch (err) {
+  return res.status(400).json({ message: "Invalid questions format" });
+}
 
     if (req.file) {
       const result = await cloudinary.uploader.upload_stream(
@@ -117,7 +124,7 @@ exports.updateForm = async (req, res) => {
   }
 };
 
-// ✅ Delete a form
+//  Delete a form
 exports.deleteForm = async (req, res) => {
   try {
     const deletedForm = await Form.findByIdAndDelete(req.params.id);
