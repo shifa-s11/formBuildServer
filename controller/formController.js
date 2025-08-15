@@ -29,7 +29,6 @@ exports.createForm = async (req, res) => {
   try {
     const { title, description } = req.body;
     let { questions } = req.body; 
-console.log(req.body,"before")
     let headerImage = null;
   try {
   if (typeof questions === "string") {
@@ -39,19 +38,18 @@ console.log(req.body,"before")
   return res.status(400).json({ message: "Invalid questions format" });
 }
 
-console.log(req.body,"after")
-    if (req.file) {
-      const result = await cloudinary.uploader.upload_stream(
-        { folder: 'forms' },
-        (error, uploadResult) => {
-          if (error) {
-            return res.status(500).json({ message: 'Image upload failed', error });
-          }
-          headerImage = uploadResult.secure_url;
-        }
-      );
-      result.end(req.file.buffer);
-    }
+if (req.file) {
+  headerImage = await new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'forms' },
+      (error, uploadResult) => {
+        if (error) return reject(error);
+        resolve(uploadResult.secure_url);
+      }
+    );
+    stream.end(req.file.buffer);
+  });
+}
 
     if (!Array.isArray(questions) || questions.length === 0) {
       return res.status(400).json({ message: 'Questions array is required' });
