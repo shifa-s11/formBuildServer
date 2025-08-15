@@ -3,7 +3,7 @@ const Question = require('../models/questionSchema');
 const mongoose = require('mongoose');
 const cloudinary = require('../config/cloudinary');
 
-// ✅ Get all forms
+//  Get all forms
 exports.getAllForms = async (req, res) => {
   try {
     const forms = await Form.find().populate('questions');
@@ -13,7 +13,7 @@ exports.getAllForms = async (req, res) => {
   }
 };
 
-// ✅ Get single form by ID
+//  Get single form by ID
 exports.getFormById = async (req, res) => {
   try {
     const form = await Form.findById(req.params.id).populate('questions');
@@ -24,35 +24,34 @@ exports.getFormById = async (req, res) => {
   }
 };
 
-// ✅ Create a form
+//  Create a form
+const Form = require('../models/formSchema');
+const Question = require('../models/questionSchema');
+const mongoose = require('mongoose');
+const cloudinary = require('../config/cloudinary');
+
 exports.createForm = async (req, res) => {
   try {
+    console.log("=== Incoming Request ===");
+    console.log("req.body:", req.body);   // Form fields
+    console.log("req.file:", req.file);   // Uploaded file
+
     const { title, description } = req.body;
-    let { questions } = req.body; 
-    let headerImage = null;
-  try {
-  if (typeof questions === "string") {
-    questions = JSON.parse(questions);
-  }
-} catch (err) {
-  return res.status(400).json({ message: "Invalid questions format" });
-}
+    let { questions } = req.body;
 
-if (req.file) {
-  headerImage = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: 'forms' },
-      (error, uploadResult) => {
-        if (error) return reject(error);
-        resolve(uploadResult.secure_url);
+    // Parse questions if sent as string
+    try {
+      if (typeof questions === "string") {
+        questions = JSON.parse(questions);
       }
-    );
-    stream.end(req.file.buffer);
-  });
-}
+    } catch (err) {
+      console.error("Error parsing questions:", err);
+      return res.status(400).json({ message: "Invalid questions format" });
+    }
 
+    // Validate questions
     if (!Array.isArray(questions) || questions.length === 0) {
-      return res.status(400).json({ message: 'Questions array is required' });
+      return res.status(400).json({ message: "Questions array is required" });
     }
 
     for (let id of questions) {
@@ -65,18 +64,43 @@ if (req.file) {
       }
     }
 
+    // Handle header image upload
+    let headerImage = null;
+    if (req.file) {
+      headerImage = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "forms" },
+          (error, uploadResult) => {
+            if (error) {
+              console.error("Cloudinary upload error:", error);
+              return reject(error);
+            }
+            resolve(uploadResult.secure_url);
+          }
+        );
+        stream.end(req.file.buffer);
+      }).catch(err => {
+        console.error("Cloudinary upload failed:", err);
+        return null;
+      });
+    }
+
+    // Create new form
     let newForm = new Form({ title, description, headerImage, questions });
     newForm = await newForm.save();
 
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const baseUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     newForm.shareableLink = `${baseUrl}/forms/${newForm._id}`;
     await newForm.save();
 
+    console.log("=== Form Created Successfully ===", newForm);
     res.status(201).json(newForm);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Create form error:", error);
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 //  Update a form
 exports.updateForm = async (req, res) => {
