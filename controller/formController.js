@@ -27,7 +27,8 @@ exports.getFormById = async (req, res) => {
 // ✅ Create a form
 exports.createForm = async (req, res) => {
   try {
-    const { title, description, questions } = req.body;
+    const { title, description } = req.body;
+    let { questions } = req.body; 
 console.log(req.body,"before")
     let headerImage = null;
   try {
