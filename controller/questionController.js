@@ -28,11 +28,9 @@ exports.createQuestion = async (req, res) => {
       clozeText,
       options,
       correctAnswers,
-      passage,
-      subQuestions,
       description
     } = req.body;
-
+let { passage, subQuestions } = req.body;
     // Validate question type
     const allowedTypes = ['categorize', 'cloze', 'comprehension'];
     if (!allowedTypes.includes(type)) {
