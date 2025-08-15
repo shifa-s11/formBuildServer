@@ -1,6 +1,6 @@
 const Question = require('../models/questionSchema');
 const mongoose = require('mongoose');
-
+const cloudinary = require('../config/cloudinary');
 exports.getAllQuestions = async (req, res) => {
   try {
     const questions = await Question.find();
@@ -40,6 +40,8 @@ exports.createQuestion = async (req, res) => {
     }
 
     let imageUrl = null;
+    console.log(req.body);
+    console.log(req.file);
     if (req.file) {
       const uploadPromise = new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(

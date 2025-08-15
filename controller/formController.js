@@ -27,9 +27,6 @@ exports.getFormById = async (req, res) => {
 //  Create a form
 exports.createForm = async (req, res) => {
   try {
-      console.log("=== Incoming Request ===");
-    console.log("req.body:", req.body);   // Form fields
-    console.log("req.file:", req.file); 
     const { title, description } = req.body;
     let { questions } = req.body; 
     let headerImage = null;
