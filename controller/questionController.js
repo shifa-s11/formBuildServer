@@ -42,6 +42,13 @@ exports.createQuestion = async (req, res) => {
     let imageUrl = null;
     console.log(req.body);
     console.log(req.file);
+    if (typeof subQuestions === 'string') {
+  try {
+    subQuestions = JSON.parse(subQuestions);
+  } catch (e) {
+    return res.status(400).json({ message: "Invalid subQuestions format" });
+  }
+}
     if (req.file) {
       const uploadPromise = new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
